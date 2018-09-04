@@ -9,13 +9,6 @@ worksheet_name = "gnavi"
 session = GoogleDrive::Session.from_config("google_drive_config.json")
 ws = session.spreadsheet_by_key("1zM2FiW1bkc-E0cI0-4AaBJ6P1VJrFy1uf68RqWxbZ0A").worksheet_by_title(worksheet_name)
 
-# ws.num_rows　空でない最終行
-existing_shops = []
-(2..ws.num_rows).map do |row|
-  existing_shops << [ws[row,1],ws[row,2]]
-end
-
-
 Capybara.register_driver(:poltergeist) do |app|
   Capybara::Poltergeist::Driver.new(app, {
     js_errors: false, :timeout => 100
@@ -56,18 +49,28 @@ for i in area do
         puts shop_name
         puts shop_url
         shops << [shop_name,shop_url]
-      end
-      # 配列ユニーク
-      new_shops = shops - existing_shops
-      last_row = ws.num_rows + 1
-      new_shops.each do |shop|
-        ws[last_row, 1] = shop[0]
-        ws[last_row, 2] = shop[1]
-        last_row += 1
-        ws.save
+        if shops.length == 10
+          #ws.num_rows　空でない最終行
+          existing_shops = []
+          today = Date.today
+          (2..ws.num_rows).map do |row|
+            existing_shops << [ws[row,1],ws[row,2]
+          end
+          #配列の引き算
+          new_shops = shops - existing_shops
+          last_row = ws.num_rows + 1
+          new_shops.each do |shop|
+            ws[last_row, 1] = shop[0]
+            ws[last_row, 2] = shop[1]
+            ws[last_row, 3] = today
+            last_row += 1
+            ws.save
+          end
+        end
+        shops = []
+        puts shops
       end
       next_page += 1
-      existing_shops = new_shops + existing_shops
     end
   end
 end

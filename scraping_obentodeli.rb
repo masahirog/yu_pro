@@ -10,7 +10,10 @@ session = GoogleDrive::Session.from_config("google_drive_config.json")
 ws = session.spreadsheet_by_key("1zM2FiW1bkc-E0cI0-4AaBJ6P1VJrFy1uf68RqWxbZ0A").worksheet_by_title(worksheet_name)
 
 shops = []
-path = 1492
+#pathが1000からスタート。店ごとにpathが割り振られている
+#エラーページで止まってしまうので、止まったらpathをエラーページの次から再スタートしないと。
+#でも順番に登録されているとしたら、次回からは前回の最後のoathに足していけばいいだけかもしれない
+path = 1000
 while path < 2000 do
   @shop_name = ""
   @error_messe = ""

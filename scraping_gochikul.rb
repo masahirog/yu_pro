@@ -20,22 +20,25 @@ elements.each do |ele|
     puts @shop_name
     puts @shop_url
     shops << [@shop_name,@shop_url]
+    if shops.length == 10
+      #ws.num_rows　空でない最終行
+      existing_shops = []
+      today = Date.today
+      (2..ws.num_rows).map do |row|
+        existing_shops << [ws[row,1],ws[row,2]
+      end
+      #配列の引き算
+      new_shops = shops - existing_shops
+      last_row = ws.num_rows + 1
+      new_shops.each do |shop|
+        ws[last_row, 1] = shop[0]
+        ws[last_row, 2] = shop[1]
+        ws[last_row, 3] = today
+        last_row += 1
+        ws.save
+      end
+    end
+    shops = []
+    puts shops
   end
-end
-#ws.num_rows　空でない最終行
-existing_shops = []
-(2..ws.num_rows).map do |row|
-  existing_shops << [ws[row,1],ws[row,2]]
-end
-#配列の引き算
-new_shops = shops - existing_shops
-
-i = 0
-last_row = ws.num_rows + 1
-
-new_shops.each do |shop|
-  ws[last_row, 1] = shop[0]
-  ws[last_row, 2] = shop[1]
-  last_row += 1
-  ws.save
 end
